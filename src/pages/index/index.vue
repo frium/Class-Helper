@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import SelectWeek from './components/SelectWeek.vue';
-
 import ClassSchedule from './components/ClassSchedule.vue';
 </script>
 

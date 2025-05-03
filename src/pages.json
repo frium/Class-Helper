@@ -2,22 +2,67 @@
 	"easycom": {
 		"autoscan": true,
 		"custom": {
-			// uni-ui 规则如下配置
 			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
 		}
 	},
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "课表助手"
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/score/index",
+			"style": {
+				"navigationBarTitleText": "成绩"
+			}
+		},
+		{
+			"path": "pages/examination/index",
+			"style": {
+				"navigationBarTitleText": "考试"
+			}
+		},
+		{
+			"path": "pages/personalCenter/index",
+			"style": {
+				"navigationBarTitleText": "我的"
 			}
 		}
 	],
+	"tabBar": {
+		"color": "#7A7E83", // 默认文字颜色
+		"selectedColor": "#007AFF", // 选中文字颜色
+		"borderStyle": "white", // 上边框颜色
+		"backgroundColor": "#FFFFFF", // 背景色
+		"position": "bottom", // 可选 bottom/top
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "课表"
+			},
+			{
+				"pagePath": "pages/score/index",
+				"text": "成绩"
+			},
+			{
+				"pagePath": "pages/examination/index",
+				"text": "考试"
+			},
+			{
+				"pagePath": "pages/personalCenter/index",
+				"text": "我的"
+			}
+		]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"titleView": false
+		}
 	}
 }
