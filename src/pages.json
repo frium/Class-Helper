@@ -11,25 +11,25 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "首页"
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/score/index",
 			"style": {
-				"navigationBarTitleText": "成绩"
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/examination/index",
 			"style": {
-				"navigationBarTitleText": "考试"
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/personalCenter/index",
 			"style": {
-				"navigationBarTitleText": "我的"
+				"navigationStyle": "custom"
 			}
 		}
 	],

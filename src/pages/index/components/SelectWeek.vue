@@ -1,134 +1,47 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue'
 
-const selectedWeek = ref(0);
-const showPopup = ref(false);
-
+const showPicker = ref(false)
 const weekOptions = ref([
-    { value: 0, text: "本周" },
-    { value: 1, text: "下周" },
-    { value: 1, text: "下周" },
-    { value: 1, text: "下周" },
-    { value: 1, text: "下周" },
-    { value: 1, text: "下周" },
-    { value: 1, text: "下周" },
-    { value: 1, text: "下周" },
-    { value: 1, text: "下周" },
-    { value: 1, text: "下周" },
-    { value: 1, text: "下周" },
-    { value: 1, text: "下周" },
-]);
+    { value: 1, text: '第1周' },
+    { value: 2, text: '第2周' },
+    { value: 3, text: '第3周' },
+    { value: 16, text: '第16周' }
+])
+const selectedWeek = ref(1);
 
-const togglePopup = () => {
-    showPopup.value = !showPopup.value;
-};
+const togglePicker = () => {
+    showPicker.value = !showPicker.value;
+}
+
+const confirm = (e: any) => {
+    selectedWeek.value = e.value[0].value;
+    showPicker.value = false;
+    change();
+}
 
 const change = () => {
-    console.log(321321);
-    showPopup.value = false;
-};
+    console.log('当前选择的周:', selectedWeek.value)
+}
+const safeArea = ref(0);
+onMounted(() => {
+    const systemInfo = uni.getSystemInfoSync()
+    safeArea.value = systemInfo.safeArea.top;
+    console.log(safeArea.value);
+
+})
 </script>
 
 <template>
-    <view class="container">
-        <button class="open-button" @click="togglePopup">第x周</button>
-        <view class="select-week" v-if="showPopup">
-            <view class="popup-mask" @click="togglePopup"></view>
-            <view class="popup-content">
-                <view class="popup-header">
-                    <text>选择周</text>
-                    <text class="close-btn" @click="togglePopup">×</text>
-                </view>
-                <view class="week-options">
-                    <view v-for="option in weekOptions" :key="option.value" class="option"
-                        :class="{ 'selected': selectedWeek === option.value }"
-                        @click="selectedWeek = option.value; change()">
-                        {{ option.text }}
-                    </view>
-                </view>
-            </view>
-        </view>
+    <view :style="{ paddingTop: safeArea + 'px' }">
+        <button class="open-button" @click="togglePicker">第{{ selectedWeek }}周</button>
+        <u-picker :show="showPicker" :columns="[weekOptions]" keyName="text" @confirm="confirm" @cancel="togglePicker"
+            :defaultIndex="[selectedWeek - 1]"></u-picker>
     </view>
 </template>
 
-<style scoped lang="scss">
-.container {
-    position: relative;
-}
-
+<style scoped>
 .open-button {
-    width: 750rpx;
-    background-color: transparent;
-    font-size: 16px;
-}
-
-.select-week {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 999;
-}
-
-.popup-mask {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-.popup-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: white;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    padding: 16px;
-    animation: slide-up 0.3s ease;
-}
-
-.popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #eee;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.close-btn {
-    font-size: 24px;
-    color: #999;
-}
-
-.week-options {
-    padding: 12px 0;
-    max-height: 180px;
-    overflow-y: auto;
-}
-
-.option {
-    padding: 12px 0;
-    text-align: center;
-    border-bottom: 1px solid #f5f5f5;
-
-    &.selected {
-        color: #007aff;
-    }
-}
-
-@keyframes slide-up {
-    from {
-        transform: translateY(100%);
-    }
-
-    to {
-        transform: translateY(0);
-    }
+    font-size: 14px;
 }
 </style>
