@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SelectSemester from './components/SelectSemester.vue';
 import ExaminationCard from './components/ExaminationCard.vue';
+import TotalDetailVue from './components/TotalDetail.vue';
 const data = [
     { name: "高等数学", credit: 4.0, score: 92, point: 4.0 },
     { name: "大学英语", credit: 3.0, score: 85, point: 3.5 },
@@ -11,6 +12,7 @@ const data = [
 <template>
     <view class="score-page">
         <SelectSemester></SelectSemester>
+        <TotalDetailVue></TotalDetailVue>
         <ExaminationCard></ExaminationCard>
         <ExaminationCard></ExaminationCard>
         <ExaminationCard></ExaminationCard>
