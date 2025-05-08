@@ -5,7 +5,7 @@ const show = ref(false);
 </script>
 
 <template>
-    <view class="examination-card" @click="show = true">
+    <view class="score-card" @click="show = true">
         <div class="left">
             <text class="class-name">高等代数</text>
             <text class="credit"> 2.0学分</text>
@@ -34,7 +34,7 @@ const show = ref(false);
 <style scoped lang="scss">
 @import url('/src/global.scss');
 
-.examination-card {
+.score-card {
     box-sizing: border-box;
     display: flex;
     background: white;

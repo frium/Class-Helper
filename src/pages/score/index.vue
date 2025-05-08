@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import SelectSemester from './components/SelectSemester.vue';
-import ExaminationCard from './components/ExaminationCard.vue';
+import SelectSemester from './components/SelectSemester.vue'
+import ScoreCard from './components/ScoreCard.vue';
 import TotalDetailVue from './components/TotalDetail.vue';
-const data = [
-    { name: "高等数学", credit: 4.0, score: 92, point: 4.0 },
-    { name: "大学英语", credit: 3.0, score: 85, point: 3.5 },
-    { name: "计算机基础", credit: 2.5, score: 78, point: 3.0 }
-]
 </script>
 
 <template>
     <view class="score-page">
         <SelectSemester></SelectSemester>
         <TotalDetailVue></TotalDetailVue>
-        <ExaminationCard></ExaminationCard>
-        <ExaminationCard></ExaminationCard>
-        <ExaminationCard></ExaminationCard>
-        <ExaminationCard></ExaminationCard>
+        <ScoreCard></ScoreCard>
+        <ScoreCard></ScoreCard>
+        <ScoreCard></ScoreCard>
+        <ScoreCard></ScoreCard>
     </view>
 
 </template>
