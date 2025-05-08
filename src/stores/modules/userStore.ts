@@ -2,9 +2,9 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('userStore', () => {
-    const jwt = ref("");
+    const token = ref("");
     return {
-        jwt
+        token
     }
 
 })
