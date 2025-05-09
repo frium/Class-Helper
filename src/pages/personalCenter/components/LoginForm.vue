@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import { LoginData } from '@/types/auth';
+import { loginAPI } from '@/api/user';
 import { ref, reactive } from 'vue';
-
-const userInfo = reactive({
+import { useUserStore } from '@/stores/modules/userStore';
+const userInfo = reactive<LoginData>({
     username: '',
     password: ''
 })
-
-const submitForm = () => {
+const userStore = useUserStore();
+const emit = defineEmits(['login-success'])
+const submitForm = async () => {
     if (userInfo.username == '') {
         uni.showModal({
             content: '请输入用户名',
@@ -22,6 +25,21 @@ const submitForm = () => {
         });
         return;
     }
+    const res = await loginAPI(userInfo);
+    const { code, data, msg } = res.data;
+    if (code != 1) {
+        uni.showToast({
+            title: msg,
+            icon: 'none',
+            duration: 1500
+        });
+        return;
+    }
+    userStore.token = data;
+
+    emit('login-success');
+    userInfo.username = "";
+    userInfo.password = "";
 }
 </script>
 

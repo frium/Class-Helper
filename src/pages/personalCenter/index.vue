@@ -2,8 +2,20 @@
 import UserInfo from "./components/UserInfo.vue";
 import LoginForm from "./components/LoginForm.vue"
 import { ref } from 'vue';
+const show = ref(false);
 
-const show = ref(false);  
+const handleLoginSuccess = () => {
+    uni.showToast({
+        title: '登录成功!',
+        icon: 'success',
+        duration: 1500
+    });
+    show.value = false;
+    setTimeout(() => {
+        uni.switchTab({ url: '/pages/index/index' });
+    }, 1500)
+}
+
 </script>
 <template>
     <view class="personal-center" @click="show = true">
@@ -11,7 +23,7 @@ const show = ref(false);
     </view>
 
     <up-popup v-model:show="show" bgColor="transparent" mode="center">
-        <LoginForm></LoginForm>
+        <LoginForm @login-success="handleLoginSuccess"></LoginForm>
     </up-popup>
 </template>
 
