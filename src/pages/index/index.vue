@@ -11,9 +11,6 @@ watch(
   () => classStore.selectedSemester,
   () => { getClassInfo(); }
 );
-
-const startTimes = ref([]);
-const endTimes = ref([]);
 const classAllDeatil = reactive<classAllDeatail>({
   list: [],
   startTime: "",
@@ -23,7 +20,9 @@ const classAllDeatil = reactive<classAllDeatail>({
   courseNum: 0
 });
 const getClassInfo = async () => {
+  loading.value = true;
   const res = await getClassAPI(classStore.semesterInfoMap.get(classStore.selectedSemester));
+  console.log(classStore.semesterInfoMap.get(classStore.selectedSemester));
   const { code, data, msg } = res.data;
   if (code != 1) {
     uni.showToast({
@@ -34,7 +33,9 @@ const getClassInfo = async () => {
     return;
   }
   Object.assign(classAllDeatil, data);
-  console.log(classAllDeatil);
+  dataArr.value = generateWeeklyDateGroups(classAllDeatil.startTime, classAllDeatil.weekNum);
+  separateArr();
+  loading.value = false;
 }
 const generateWeeklyDateGroups = (startDate: string, weeks: number): string[][] => {
   const result: string[][] = [];
@@ -76,6 +77,8 @@ const separateArr = () => {
         weekStart = parseInt(week[0]);
         weekEnd = parseInt(week[1]);
       }
+
+
       let jumpNum = 1;
       if (allWeek[j].includes('单') || allWeek[j].includes('双')) jumpNum = 2;
       //获取星期
@@ -91,41 +94,66 @@ const separateArr = () => {
 }
 
 const dataArr = ref([]);
+
+const handleSwiperChange = (event: any) => {
+  classStore.selectedWeek = event.detail.current + 1;
+}
+const loading = ref(true);
 onMounted(async () => {
   await getClassInfo();
-  startTimes.value = classAllDeatil.startTimes;
-  endTimes.value = classAllDeatil.endTimes;
-  dataArr.value = generateWeeklyDateGroups(classAllDeatil.startTime, classAllDeatil.weekNum);
-  separateArr();
 })
 </script>
 
 <template>
   <view class="home">
     <SelectSemesterWeek></SelectSemesterWeek>
-    <view style="display: flex; ">
-      <view class="class-time">
-        <view class="time-box" v-for="(time, index) in startTimes" :key="index">
-          <text class="time">{{ startTimes[index] }}</text>
-          <text style="font-weight: 600;">{{ (index + 1) }}</text>
-          <text class="time">{{ endTimes[index] }}</text>
-        </view>
-      </view>
-      <swiper class="swiper" :duration="500">
-        <swiper-item v-for="(item, index) in dataArr" :key="index">
-          <ClassSchedule :dateInfo="dataArr[index]" :classData="classInfoArr[index]"></ClassSchedule>
-        </swiper-item>
-      </swiper>
+    <view class="loading-mask" v-if="loading">
+      <up-loading-icon color="white"></up-loading-icon>
     </view>
+    <view>
+      <view style="display: flex; ">
+        <view class="class-time">
+          <view class="time-box" v-for="(time, index) in classAllDeatil.startTimes" :key="index">
+            <text class="time">{{ classAllDeatil.startTimes[index] }}</text>
+            <text style="font-weight: 600;">{{ (index + 1) }}</text>
+            <text class="time">{{ classAllDeatil.endTimes[index] }}</text>
+          </view>
+        </view>
+        <swiper class="swiper" :duration="500" @change="handleSwiperChange">
+          <swiper-item v-for="(item, index) in dataArr" :key="index">
+            <ClassSchedule :dateInfo="dataArr[index]" :classData="classInfoArr[index]"></ClassSchedule>
+          </swiper-item>
+        </swiper>
+      </view>
+    </view>
+
   </view>
 </template>
 <style lang="scss" scoped>
+.loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(52, 52, 52, 0.6);
+  /* 半透明黑色遮罩 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  /* 确保在最上层 */
+}
+
+
+
 .swiper {
   height: 88vh;
   width: 750rpx;
 }
 
 .home {
+  position: relative;
   width: 750rpx;
   padding: 0 5rpx;
 

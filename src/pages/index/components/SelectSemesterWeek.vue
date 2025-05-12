@@ -5,13 +5,13 @@ import { onMounted, ref } from 'vue'
 
 const show = ref<boolean>(false);
 const classStore = useClassStore();
-const selectedWeek = ref(1);
 const togglePicker = () => {
     show.value = !show.value;
 }
 
 const selectSemester = (num: number) => {
     classStore.selectedSemester = num;
+    show.value = false;
 }
 
 
@@ -24,7 +24,7 @@ onMounted(async () => {
 
 <template>
     <view :style="{ paddingTop: safeArea + 'px' }">
-        <button class="open-button" @click="togglePicker">第{{ selectedWeek }}周</button>
+        <button class="open-button" @click="togglePicker">第{{ classStore.selectedWeek }}周</button>
         <up-popup v-model:show="show" bgColor="transparent">
             <view class="top">
                 <text style="font-size: 14px; margin: 10px 0 0 5px;">切换课表</text>

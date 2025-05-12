@@ -26,8 +26,10 @@ export const useClassStore = defineStore('classStore', () => {
         return semesterMap;
     })
     const selectedSemester = ref(semesterInfoMap.value.size);
+    const selectedWeek = ref(1);
     return {
         semesterInfoMap,
-        selectedSemester
+        selectedSemester,
+        selectedWeek
     }
 })
