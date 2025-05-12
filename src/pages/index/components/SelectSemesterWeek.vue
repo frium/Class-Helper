@@ -1,29 +1,24 @@
 <script setup lang="ts">
+import { getClassAPI } from '@/api/class';
 import { useClassStore } from '@/stores/modules/classStore';
-import { useUserStore } from '@/stores/modules/userStore';
-import { getClassData } from '@/types/class';
-import { computed, onMounted, reactive, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const show = ref<boolean>(false);
 const classStore = useClassStore();
 const selectedWeek = ref(1);
-
 const togglePicker = () => {
     show.value = !show.value;
 }
 
 const selectSemester = (num: number) => {
-    selectedNum.value = num;
+    classStore.selectedSemester = num;
 }
-const selectedNum = ref(-1);
-selectedNum.value = classStore.semesterInfoMap.size;
+
+
 const safeArea = ref(0);
-
-
-onMounted(() => {
+onMounted(async () => {
     const systemInfo = uni.getSystemInfoSync();
     safeArea.value = systemInfo.safeArea.top;
-    console.log(safeArea.value);
 })
 </script>
 
@@ -38,7 +33,8 @@ onMounted(() => {
                         <view style="display:flex;flex-direction: column; position: relative;"
                             v-for="(item, index) in classStore.semesterInfoMap.size" :key="index">
                             <view class="semester" @click="selectSemester(item)"
-                                :style="{ background: item === selectedNum ? '#47a6f3' : '#e6e6e6' }"></view>
+                                :style="{ background: item === classStore.selectedSemester ? '#47a6f3' : '#e6e6e6' }">
+                            </view>
                             <view style="text-align: center;">
                                 <text>大</text>
                                 <text v-if="item <= 2">一</text>
@@ -48,8 +44,8 @@ onMounted(() => {
                                 <text v-if="item % 2 != 0"> 上</text>
                                 <text v-else> 下</text>
                             </view>
-                            <image v-if="item === selectedNum" src="@/static/icons/tick.svg" mode="scaleToFill"
-                                class="selected-semester" />
+                            <image v-if="item === classStore.selectedSemester" src="@/static/icons/tick.svg"
+                                mode="scaleToFill" class="selected-semester" />
                         </view>
                     </view>
                 </scroll-view>

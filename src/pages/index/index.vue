@@ -1,47 +1,87 @@
 <script setup lang="ts">
 import SelectSemesterWeek from './components/SelectSemesterWeek.vue';
 import ClassSchedule from './components/ClassSchedule.vue';
-import { onMounted, reactive } from 'vue';
 import { getClassAPI } from '@/api/class';
-import { getClassData } from '@/types/class';
+import { useClassStore } from '@/stores/modules/classStore';
+import { onMounted, reactive, ref, watch } from 'vue';
+import { classAllDeatail } from '@/types/class';
+const classStore = useClassStore();
 
-//获取所有课表
-const selectInfo = reactive<getClassData>({
-  xnm: '',
-  xqm: ''
+watch(
+  () => classStore.selectedSemester,
+  () => { getClassInfo(); }
+);
+
+const startTimes = ref([]);
+const endTimes = ref([]);
+const classAllDeatil = reactive<classAllDeatail>({
+  list: [],
+  startTime: "",
+  weekNum: 0,
+  startTimes: [],
+  endTimes: [],
+  courseNum: 0
 });
-onMounted(() => {
+const getClassInfo = async () => {
+  const res = await getClassAPI(classStore.semesterInfoMap.get(classStore.selectedSemester));
+  const { code, data, msg } = res.data;
+  if (code != 1) {
+    uni.showToast({
+      title: msg,
+      icon: 'none',
+      duration: 1500
+    });
+    return;
+  }
+  Object.assign(classAllDeatil, data);
+  console.log(classAllDeatil);
+}
+onMounted(async () => {
+  await getClassInfo();
+  startTimes.value = classAllDeatil.startTimes;
+  endTimes.value = classAllDeatil.endTimes;
 })
 </script>
 
 <template>
-  <SelectSemesterWeek></SelectSemesterWeek>
-  <ClassSchedule></ClassSchedule>
+  <view class="home">
+    <SelectSemesterWeek></SelectSemesterWeek>
+    <view style="display: flex; ">
+      <view class="class-time">
+        <view class="time-box" v-for="(time, index) in startTimes" :key="index">
+          <text class="time">{{ startTimes[index] }}</text>
+          <text style="font-weight: 600;">{{ (index + 1) }}</text>
+          <text class="time">{{ endTimes[index] }}</text>
+        </view>
+      </view>
+      <ClassSchedule></ClassSchedule>
+    </view>
+  </view>
 </template>
-<style>
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+<style lang="scss" scoped>
+.home {
+  width: 750rpx;
+  padding: 0 5rpx;
 
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin-top: 200rpx;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50rpx;
-}
+  .class-time {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 50rpx;
+    padding: 35px 5rpx 5rpx 5rpx;
 
-.text-area {
-  display: flex;
-  justify-content: center;
-}
+    .time-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3rpx;
+      color: #a7a7a7;
 
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
+
+      .time {
+        font-size: 10px;
+      }
+    }
+  }
 }
 </style>

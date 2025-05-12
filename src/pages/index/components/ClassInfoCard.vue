@@ -16,10 +16,11 @@
     display: flex;
     flex-direction: column;
     width: 90rpx;
-    background: pink;
+    background: rgb(111, 119, 237);
     height: 15vh;
     padding: 3rpx 5px;
     border-radius: 10rpx;
+    color: #f1f1f1;
 
     text {
         word-wrap: break-word;

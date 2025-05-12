@@ -4,8 +4,7 @@ import ClassInfoCard from './ClassInfoCard.vue';
 
 <template>
     <view class="class-schedule">
-        <view class="class-time">
-        </view>
+
         <view class="class-detail">
             <view class="class-top">
                 <view class="class-date" v-for="(item, index) in 7" :key="index">
@@ -74,16 +73,8 @@ import ClassInfoCard from './ClassInfoCard.vue';
 
 <style scoped lang="scss">
 .class-schedule {
-    width: 750rpx;
     display: flex;
-    padding: 0 20rpx;
-
-    .class-time {
-        width: 50rpx;
-        height: 100vh;
-        padding: 5rpx;
-        background: blanchedalmond;
-    }
+    padding: 0 10rpx;
 
     .class-detail {
 

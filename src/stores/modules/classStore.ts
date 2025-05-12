@@ -1,11 +1,10 @@
 import { getClassData } from '@/types/class';
 import { defineStore } from 'pinia'
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useUserStore } from '@/stores/modules/userStore';
 
 export const useClassStore = defineStore('classStore', () => {
     const userStore = useUserStore();
-
     const semesterInfoMap = computed<Map<number, getClassData>>(() => {
         let num: number = 0;
         const now = new Date();
@@ -26,7 +25,9 @@ export const useClassStore = defineStore('classStore', () => {
         }
         return semesterMap;
     })
+    const selectedSemester = ref(semesterInfoMap.value.size);
     return {
-        semesterInfoMap
+        semesterInfoMap,
+        selectedSemester
     }
 })
