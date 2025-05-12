@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { LoginData } from '@/types/auth';
-import { loginAPI } from '@/api/user';
+import { getUserInfoAPI, loginAPI } from '@/api/user';
 import { ref, reactive } from 'vue';
 import { useUserStore } from '@/stores/modules/userStore';
 const userInfo = reactive<LoginData>({
@@ -36,10 +36,23 @@ const submitForm = async () => {
         return;
     }
     userStore.token = data;
-
+    getUserInfo();
     emit('login-success');
     userInfo.username = "";
     userInfo.password = "";
+}
+const getUserInfo = async () => {
+    const res = await getUserInfoAPI();
+    const { code, data, msg } = res.data;
+    if (code != 1) {
+        uni.showToast({
+            title: msg,
+            icon: 'none',
+            duration: 1500
+        });
+        return;
+    }
+    userStore.entryYear = data.entryYear;
 }
 </script>
 

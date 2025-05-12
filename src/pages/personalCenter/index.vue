@@ -2,9 +2,10 @@
 import UserInfo from "./components/UserInfo.vue";
 import LoginForm from "./components/LoginForm.vue"
 import { ref } from 'vue';
+import { getUserInfoAPI } from "@/api/user";
 const show = ref(false);
 
-const handleLoginSuccess = () => {
+const handleLoginSuccess = async () => {
     uni.showToast({
         title: '登录成功!',
         icon: 'success',
@@ -13,7 +14,9 @@ const handleLoginSuccess = () => {
     show.value = false;
     setTimeout(() => {
         uni.switchTab({ url: '/pages/index/index' });
-    }, 1500)
+    }, 1500);
+
+
 }
 
 </script>

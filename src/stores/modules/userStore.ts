@@ -2,9 +2,11 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useUserStore = defineStore('userStore', () => {
-    const token = ref('')
+    const token = ref('');
+    const entryYear = ref(0);
     return {
-        token
+        token,
+        entryYear
     }
 }, {
     persist: {

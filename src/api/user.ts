@@ -7,3 +7,8 @@ export const loginAPI = (loginData: LoginData) => {
         data: loginData
     })
 }
+export const getUserInfoAPI = () => {
+    return request({
+        url: '/user/personal',
+    })
+}

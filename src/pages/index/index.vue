@@ -1,10 +1,21 @@
 <script setup lang="ts">
-import SelectWeek from './components/SelectWeek.vue';
+import SelectSemesterWeek from './components/SelectSemesterWeek.vue';
 import ClassSchedule from './components/ClassSchedule.vue';
+import { onMounted, reactive } from 'vue';
+import { getClassAPI } from '@/api/class';
+import { getClassData } from '@/types/class';
+
+//获取所有课表
+const selectInfo = reactive<getClassData>({
+  xnm: '',
+  xqm: ''
+});
+onMounted(() => {
+})
 </script>
 
 <template>
-  <SelectWeek></SelectWeek>
+  <SelectSemesterWeek></SelectSemesterWeek>
   <ClassSchedule></ClassSchedule>
 </template>
 <style>
