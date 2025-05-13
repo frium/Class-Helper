@@ -5,7 +5,11 @@ const props = defineProps({
     dateInfo: Array,
     classData: Array
 })
-const weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+const weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+const handelShowSchedule = (classInfo) => {
+    console.log(classInfo);
+
+}
 </script>
 
 <template>
@@ -20,9 +24,10 @@ const weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '�
             </view>
 
             <view class="class-info-out-box">
-                <view class="class-info" v-for="item in props.classData" :key="item">
+                <view class="class-info" v-for="item in props.classData" :key="item" @click="handelShowSchedule(item)">
                     <template v-for="classInfo in item" :key="classInfo">
-                        <ClassInfoCard :style="{ visibility: classInfo ? 'visible' : 'hidden' }" :classInfo="classInfo">
+                        <ClassInfoCard :style="{ visibility: classInfo[0] ? 'visible' : 'hidden' }"
+                            :classInfo="classInfo[0]">
                         </ClassInfoCard>
                     </template>
                 </view>

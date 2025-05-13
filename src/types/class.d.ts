@@ -14,7 +14,9 @@ export interface classInfo {
     zcd: string,
     xm: string,
     xf: string,
-    khfsmc: string
+    khfsmc: string,
+    isNowWeek?: boolean,
+    isNextWeek?: boolean
 }
 
 export interface classAllDeatail {

@@ -54,43 +54,59 @@ const generateWeeklyDateGroups = (startDate: string, weeks: number): string[][] 
   }
   return result;
 };
-const classInfoArr = ref<classInfo[][][]>();
+const classInfoArr = ref<classInfo[][][][]>();
 const separateArr = () => {
-  classInfoArr.value = Array.from({ length: classAllDeatil.weekNum }, () =>
-    Array.from({ length: 7 }, () =>
-      Array(5).fill(null)
-    )
-  );
+  classInfoArr.value = Array.from({ length: classAllDeatil.weekNum }, () => Array.from({ length: 7 }, () => Array.from({ length: 5 }, () => [])));
   for (let i = 0; i < classAllDeatil.list.length; i++) {
     //获取课程信息
     const classInfo: classInfo = classAllDeatil.list[i];
     //获取周
     const allWeek: string[] = classInfo.zcd.split(',');
+    let notWeek: number = 1;
     for (let j = 0; j < allWeek.length; j++) {
       const week: string[] = allWeek[j].split('周')[0].split("-");
       let weekStart: number;
       let weekEnd: number;
-      if (week.length == 1) {
-        weekStart = parseInt(week[0]);
-        weekEnd = parseInt(week[0]);
-      } else {
-        weekStart = parseInt(week[0]);
-        weekEnd = parseInt(week[1]);
-      }
-
-
-      let jumpNum = 1;
-      if (allWeek[j].includes('单') || allWeek[j].includes('双')) jumpNum = 2;
+      weekStart = parseInt(week[0]);
+      weekEnd = week.length == 1 ? weekStart : parseInt(week[1]);
+      let toJump: boolean = false;
+      if (allWeek[j].includes('单') || allWeek[j].includes('双')) toJump = true;
       //获取星期
       const day: number = parseInt(classInfo.xqj);
       //获取第几节课程
       const classTime: number = (parseInt(classInfo.jc.split("-")[0]) + 1) / 2;
       //填充数据
-      for (let i = weekStart - 1; i <= weekEnd - 1; i += jumpNum) {
-        classInfoArr.value[i][day - 1][classTime - 1] = classInfo;
+      for (let i = notWeek - 1; i <= weekEnd - 1; i++) {
+        const nowClassInfo: classInfo = {
+          kch_id: "",
+          kcmc: "",
+          xslxbj: "",
+          cdmc: "",
+          jc: "",
+          xqj: "",
+          zcd: "",
+          xm: "",
+          xf: "",
+          khfsmc: "",
+          isNextWeek: false,
+          isNowWeek: false
+        };
+        Object.assign(nowClassInfo, classInfo);
+        if (i >= weekStart - 1) { //填充当前周课程
+          if (!toJump) nowClassInfo.isNowWeek = true;
+          if (toJump && (weekStart % 2 == 0 && (i + 1) % 2 == 0) || (weekStart % 2 != 0 && (i + 1) % 2 != 0)) nowClassInfo.isNowWeek = true;
+        } else { //填充非当前周课程
+          nowClassInfo.isNowWeek = false;
+          if (i + 1 >= weekStart - 1) nowClassInfo.isNextWeek = true;  //是否是下一周的课程
+        }
+        classInfoArr.value[i][day - 1][classTime - 1].push(nowClassInfo);
+        classInfoArr.value[i][day - 1][classTime - 1].sort((a, b) => Number(b.isNowWeek) - Number(a.isNowWeek));
       }
+      notWeek = weekEnd;
     }
   }
+  console.log(classInfoArr.value);
+
 }
 
 const dataArr = ref([]);
@@ -137,12 +153,10 @@ onMounted(async () => {
   right: 0;
   bottom: 0;
   background-color: rgba(52, 52, 52, 0.6);
-  /* 半透明黑色遮罩 */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  /* 确保在最上层 */
 }
 
 

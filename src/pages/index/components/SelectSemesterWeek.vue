@@ -49,7 +49,6 @@ onMounted(async () => {
                         </view>
                     </view>
                 </scroll-view>
-
             </view>
             <view class="bottom">
                 <text style="font-size: 14px; margin: 10px 0 0 5px;">切换周</text>
