@@ -5,8 +5,11 @@ import { getClassAPI } from '@/api/class';
 import { useClassStore } from '@/stores/modules/classStore';
 import { onMounted, reactive, ref, watch } from 'vue';
 import { classAllDeatail, classInfo } from '@/types/class';
-const classStore = useClassStore();
+import PopupClassInfo from './components/PopupClassInfo.vue'
 
+
+const classStore = useClassStore();
+const show = ref(false);
 watch(
   () => classStore.selectedSemester,
   () => { getClassInfo(); }
@@ -115,6 +118,11 @@ const handleSwiperChange = (event: any) => {
   classStore.selectedWeek = event.detail.current + 1;
 }
 const loading = ref(true);
+const showClassInfoArr = ref([]);
+const handelShowClassInfo = (classInfoArr: Array<classInfo>) => {
+  show.value = true;
+  showClassInfoArr.value = classInfoArr;
+}
 onMounted(async () => {
   await getClassInfo();
 })
@@ -137,15 +145,31 @@ onMounted(async () => {
         </view>
         <swiper class="swiper" :duration="500" @change="handleSwiperChange">
           <swiper-item v-for="(item, index) in dataArr" :key="index">
-            <ClassSchedule :dateInfo="dataArr[index]" :classData="classInfoArr[index]"></ClassSchedule>
+            <ClassSchedule :dateInfo="dataArr[index]" :classData="classInfoArr[index]"
+              @select-class="handelShowClassInfo"></ClassSchedule>
           </swiper-item>
         </swiper>
       </view>
     </view>
-
   </view>
+  <up-popup v-model:show="show" bgColor="transparent" mode="center" :style="{ position: 'fixed', zIndex: 9999 }">
+    <view class="popup-out-box">
+      <template v-for="(item, index) in showClassInfoArr" :key="index">
+        <PopupClassInfo v-if="item" :classInfo="item"></PopupClassInfo>
+      </template>
+    </view>
+  </up-popup>
 </template>
 <style lang="scss" scoped>
+.popup-out-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin: auto;
+  max-width: calc(300rpx * 2 + 15px);
+}
+
 .loading-mask {
   position: fixed;
   top: 0;
