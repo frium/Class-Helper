@@ -28,7 +28,7 @@ const handleShowSchedule = (classInfo: Array<classInfo>) => {
                     <text style="font-size: 12px">{{ item }}</text>
                 </view>
             </view>
-            <view class="class-info-out-box">
+            <view class="class-info-out-box grid">
                 <view class="class-info" v-for="(item, index)  in props.classData" :key="index">
                     <view @click="handleShowSchedule(classInfo)" v-for="(classInfo, index) in item" :key="index">
                         <ClassInfoCard :style="{ visibility: classInfo[0] ? 'visible' : 'hidden' }"
@@ -53,8 +53,9 @@ const handleShowSchedule = (classInfo: Array<classInfo>) => {
         width: 100%;
 
         .class-top {
-            display: flex;
-            justify-content: space-around;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8rpx;
 
             .class-date {
                 display: flex;
@@ -63,18 +64,27 @@ const handleShowSchedule = (classInfo: Array<classInfo>) => {
             }
         }
 
+        .grid {
+            height: 100%;
+            background-image: radial-gradient(circle, rgb(221, 229, 240) 2px, #f8f8f8 2px);
+            background-size: 20px 20px;
+            background-position: center center;
+        }
+
         .class-info-out-box {
+
+            background-repeat: repeat;
             width: 100%;
             margin-top: 10rpx;
             display: flex;
             justify-content: space-around;
-            gap: 10rpx;
+            gap: 8rpx;
 
             .class-info {
                 width: 25%;
                 display: flex;
                 flex-direction: column;
-                gap: 10rpx;
+                row-gap: 10rpx;
             }
         }
 

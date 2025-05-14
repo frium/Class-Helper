@@ -37,7 +37,7 @@
 		"color": "#7A7E83", // 默认文字颜色
 		"selectedColor": "#007AFF", // 选中文字颜色
 		"borderStyle": "white", // 上边框颜色
-		"backgroundColor": "#FFFFFF", // 背景色
+		"backgroundColor": "#f8f8f8", // 背景色
 		"position": "bottom", // 可选 bottom/top
 		"list": [
 			{

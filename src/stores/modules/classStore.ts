@@ -1,4 +1,4 @@
-import { getClassData } from '@/types/class';
+import { classAllDeatail, getClassData } from '@/types/class';
 import { defineStore } from 'pinia'
 import { computed, reactive, ref } from 'vue'
 import { useUserStore } from '@/stores/modules/userStore';
@@ -24,12 +24,35 @@ export const useClassStore = defineStore('classStore', () => {
             semesterMap.set(i, semesterInfo);
         }
         return semesterMap;
-    })
-    const selectedSemester = ref(semesterInfoMap.value.size);
+    });
+
+    const selectedSemester = computed<number>(() => {
+        return semesterInfoMap.value.size;
+    });
     const selectedWeek = ref(1);
+    const getLocalClassAllDetail = (key: number): classAllDeatail => {
+        return uni.getStorageSync(`class_${key}`);
+    }
+    const setLocalClassAllDetail = (key: number, data: classAllDeatail): void => {
+        uni.setStorageSync(`class_${key}`, data);
+    }
     return {
         semesterInfoMap,
         selectedSemester,
-        selectedWeek
+        selectedWeek,
+        getLocalClassAllDetail,
+        setLocalClassAllDetail,
+    }
+}, {
+    persist: {
+        key: 'class-store',
+        storage: {
+            getItem(key) {
+                return uni.getStorageSync(key)
+            },
+            setItem(key, value) {
+                uni.setStorageSync(key, value)
+            }
+        }
     }
 })

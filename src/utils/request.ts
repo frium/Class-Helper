@@ -12,6 +12,9 @@ export const request = axios.create({
 
 //拦截器
 request.interceptors.request.use(config => {
+  if (!config.headers['Content-Type']) {
+    config.headers['Content-Type'] = 'application/json';
+  }
   const token = useUserStore().token;
   if (token) config.headers.Authorization = `${token}`;
   return config;

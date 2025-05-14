@@ -47,7 +47,7 @@ const props = defineProps({
 .class-info-card {
     display: flex;
     flex-direction: column;
-    width: 90rpx;
+    width: 100%;
     height: 16vh;
     padding: 4px;
     border-radius: 10rpx;

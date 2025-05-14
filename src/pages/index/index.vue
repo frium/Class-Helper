@@ -6,6 +6,7 @@ import { useClassStore } from '@/stores/modules/classStore';
 import { onMounted, reactive, ref, watch } from 'vue';
 import { classAllDeatail, classInfo } from '@/types/class';
 import PopupClassInfo from './components/PopupClassInfo.vue'
+import { onShow } from '@dcloudio/uni-app';
 
 
 const classStore = useClassStore();
@@ -24,18 +25,22 @@ const classAllDeatil = reactive<classAllDeatail>({
 });
 const getClassInfo = async () => {
   loading.value = true;
-  const res = await getClassAPI(classStore.semesterInfoMap.get(classStore.selectedSemester));
-  console.log(classStore.semesterInfoMap.get(classStore.selectedSemester));
-  const { code, data, msg } = res.data;
-  if (code != 1) {
-    uni.showToast({
-      title: msg,
-      icon: 'none',
-      duration: 1500
-    });
-    return;
+  const localData = classStore.getLocalClassAllDetail(classStore.selectedSemester);
+  if (!localData) {
+    const res = await getClassAPI(classStore.semesterInfoMap.get(classStore.selectedSemester));
+    const { code, data, msg } = res.data;
+    if (code != 1) {
+      uni.showToast({
+        title: msg,
+        icon: 'none',
+        duration: 1500
+      });
+      return;
+    }
+    Object.assign(classAllDeatil, data);
   }
-  Object.assign(classAllDeatil, data);
+  Object.assign(classAllDeatil, localData);
+  classStore.setLocalClassAllDetail(classStore.selectedSemester, classAllDeatil);
   dataArr.value = generateWeeklyDateGroups(classAllDeatil.startTime, classAllDeatil.weekNum);
   separateArr();
   loading.value = false;
@@ -108,8 +113,6 @@ const separateArr = () => {
       notWeek = weekEnd;
     }
   }
-  console.log(classInfoArr.value);
-
 }
 
 const dataArr = ref([]);
@@ -123,7 +126,7 @@ const handelShowClassInfo = (classInfoArr: Array<classInfo>) => {
   show.value = true;
   showClassInfoArr.value = classInfoArr;
 }
-onMounted(async () => {
+onShow(async () => {
   await getClassInfo();
 })
 </script>
@@ -186,7 +189,7 @@ onMounted(async () => {
 
 
 .swiper {
-  height: 88vh;
+  height: 90vh;
   width: 750rpx;
 }
 

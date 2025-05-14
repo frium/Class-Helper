@@ -15,8 +15,6 @@ const handleLoginSuccess = async () => {
     setTimeout(() => {
         uni.switchTab({ url: '/pages/index/index' });
     }, 1500);
-
-
 }
 
 </script>
@@ -24,7 +22,6 @@ const handleLoginSuccess = async () => {
     <view class="personal-center" @click="show = true">
         <UserInfo></UserInfo>
     </view>
-
     <up-popup v-model:show="show" bgColor="transparent" mode="center">
         <LoginForm @login-success="handleLoginSuccess"></LoginForm>
     </up-popup>
