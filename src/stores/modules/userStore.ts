@@ -4,9 +4,11 @@ import { ref } from 'vue'
 export const useUserStore = defineStore('userStore', () => {
     const token = ref('');
     const entryYear = ref(0);
+    const username = ref('');
     return {
         token,
-        entryYear
+        entryYear,
+        username
     }
 }, {
     persist: {

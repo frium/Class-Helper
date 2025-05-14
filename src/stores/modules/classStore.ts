@@ -5,6 +5,7 @@ import { useUserStore } from '@/stores/modules/userStore';
 
 export const useClassStore = defineStore('classStore', () => {
     const userStore = useUserStore();
+    const selectedSemester = ref(1);
     const semesterInfoMap = computed<Map<number, getClassData>>(() => {
         let num: number = 0;
         const now = new Date();
@@ -23,18 +24,15 @@ export const useClassStore = defineStore('classStore', () => {
             }
             semesterMap.set(i, semesterInfo);
         }
+        selectedSemester.value = semesterMap.size;
         return semesterMap;
-    });
-
-    const selectedSemester = computed<number>(() => {
-        return semesterInfoMap.value.size;
     });
     const selectedWeek = ref(1);
     const getLocalClassAllDetail = (key: number): classAllDeatail => {
-        return uni.getStorageSync(`class_${key}`);
+        return uni.getStorageSync(`${userStore.username}_class_${key}`);
     }
     const setLocalClassAllDetail = (key: number, data: classAllDeatail): void => {
-        uni.setStorageSync(`class_${key}`, data);
+        uni.setStorageSync(`${userStore.username}_class_${key}`, data);
     }
     return {
         semesterInfoMap,

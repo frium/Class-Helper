@@ -64,7 +64,7 @@ const generateWeeklyDateGroups = (startDate: string, weeks: number): string[][] 
 };
 const classInfoArr = ref<classInfo[][][][]>();
 const separateArr = () => {
-  classInfoArr.value = Array.from({ length: classAllDeatil.weekNum }, () => Array.from({ length: 7 }, () => Array.from({ length: 5 }, () => [])));
+  classInfoArr.value = Array.from({ length: classAllDeatil.weekNum }, () => Array.from({ length: 7 }, () => Array.from({ length: classAllDeatil.startTimes.length / 2 }, () => [])));
   for (let i = 0; i < classAllDeatil.list.length; i++) {
     //获取课程信息
     const classInfo: classInfo = classAllDeatil.list[i];
@@ -83,6 +83,8 @@ const separateArr = () => {
       const day: number = parseInt(classInfo.xqj);
       //获取第几节课程
       const classTime: number = (parseInt(classInfo.jc.split("-")[0]) + 1) / 2;
+      //获取课程持续时间
+      const lastTime: number = (parseInt(classInfo.jc.split("-")[1].split('节')[0]) - parseInt(classInfo.jc.split("-")[0]) + 1) / 2;
       //填充数据
       for (let i = notWeek - 1; i <= weekEnd - 1; i++) {
         const nowClassInfo: classInfo = {
@@ -97,7 +99,8 @@ const separateArr = () => {
           xf: "",
           khfsmc: "",
           isNextWeek: false,
-          isNowWeek: false
+          isNowWeek: false,
+          lastTime: lastTime
         };
         Object.assign(nowClassInfo, classInfo);
         if (i >= weekStart - 1) { //填充当前周课程
@@ -109,10 +112,19 @@ const separateArr = () => {
         }
         classInfoArr.value[i][day - 1][classTime - 1].push(nowClassInfo);
         classInfoArr.value[i][day - 1][classTime - 1].sort((a, b) => Number(b.isNowWeek) - Number(a.isNowWeek));
+        //如果持续时间大于等于两节课
+        if (lastTime >= 2) {
+          for (let z = 0; z < lastTime - 1; z++) {
+            classInfoArr.value[i][day - 1][classTime + z].push(null);
+          }
+        }
+
       }
-      notWeek = weekEnd;
+      notWeek = weekEnd + 1;
     }
   }
+  console.log(classInfoArr.value);
+
 }
 
 const dataArr = ref([]);
@@ -146,7 +158,7 @@ onShow(async () => {
             <text class="time">{{ classAllDeatil.endTimes[index] }}</text>
           </view>
         </view>
-        <swiper class="swiper" :duration="500" @change="handleSwiperChange">
+        <swiper class="swiper" :duration="200" @change="handleSwiperChange">
           <swiper-item v-for="(item, index) in dataArr" :key="index">
             <ClassSchedule :dateInfo="dataArr[index]" :classData="classInfoArr[index]"
               @select-class="handelShowClassInfo"></ClassSchedule>
@@ -203,7 +215,7 @@ onShow(async () => {
     flex-direction: column;
     justify-content: space-around;
     width: 55rpx;
-    padding: 35px 12rpx 10rpx 8rpx;
+    padding: 60rpx 12rpx 30rpx 8rpx;
 
     .time-box {
       display: flex;
@@ -211,7 +223,6 @@ onShow(async () => {
       align-items: center;
       gap: 3rpx;
       color: #a7a7a7;
-
 
       .time {
         font-size: 10px;

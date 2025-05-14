@@ -55,6 +55,7 @@ const getUserInfo = async () => {
         return;
     }
     userStore.entryYear = data.entryYear;
+    userStore.username = data.username;
 }
 </script>
 

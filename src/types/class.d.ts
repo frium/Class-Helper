@@ -16,7 +16,8 @@ export interface classInfo {
     xf: string,
     khfsmc: string,
     isNowWeek?: boolean,
-    isNextWeek?: boolean
+    isNextWeek?: boolean,
+    lastTime?: number
 }
 
 export interface classAllDeatail {

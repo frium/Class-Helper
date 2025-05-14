@@ -5,7 +5,7 @@ import { classInfo } from '@/types/class';
 
 const props = defineProps({
     dateInfo: Array,
-    classData: Array
+    classData: Array as () => classInfo[][][]
 })
 const weekDays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 const emit = defineEmits(['select-class'])
@@ -30,11 +30,22 @@ const handleShowSchedule = (classInfo: Array<classInfo>) => {
             </view>
             <view class="class-info-out-box grid">
                 <view class="class-info" v-for="(item, index)  in props.classData" :key="index">
-                    <view @click="handleShowSchedule(classInfo)" v-for="(classInfo, index) in item" :key="index">
-                        <ClassInfoCard :style="{ visibility: classInfo[0] ? 'visible' : 'hidden' }"
-                            :classInfo="classInfo[0]">
-                        </ClassInfoCard>
-                    </view>
+                    <template v-for="(classInfo, index) in item" :key="index">
+                        <view v-if="!classInfo[0]" :style="{ height: '18%', 'flex-shrink': '0' }">
+                            <ClassInfoCard :style="{ visibility: classInfo[0] ? 'visible' : 'hidden' }"
+                                :classInfo="classInfo[0]">
+                            </ClassInfoCard>
+                        </view>
+                        <view v-else :style="{
+                            height: `${18 * classInfo[0].lastTime}%`,
+                            'flex-shrink': '0'
+                        }" @click="handleShowSchedule(classInfo)">
+                            <ClassInfoCard :style="{ visibility: classInfo[0] ? 'visible' : 'hidden' }"
+                                :classInfo="classInfo[0]">
+                            </ClassInfoCard>
+                        </view>
+                    </template>
+
                 </view>
             </view>
         </view>
@@ -48,9 +59,11 @@ const handleShowSchedule = (classInfo: Array<classInfo>) => {
     display: flex;
     padding: 0 10rpx;
     width: 100%;
+    height: 100%;
 
     .class-detail {
         width: 100%;
+        height: 100%;
 
         .class-top {
             display: grid;
@@ -72,16 +85,16 @@ const handleShowSchedule = (classInfo: Array<classInfo>) => {
         }
 
         .class-info-out-box {
-
-            background-repeat: repeat;
             width: 100%;
-            margin-top: 10rpx;
+            height: 100%;
             display: flex;
             justify-content: space-around;
             gap: 8rpx;
+            margin-top: 10rpx;
 
             .class-info {
                 width: 25%;
+                height: 100%;
                 display: flex;
                 flex-direction: column;
                 row-gap: 10rpx;

@@ -27,8 +27,6 @@ const props = defineProps({
 .class-info-card-not-now {
     background: rgb(220, 220, 220);
     color: #757575;
-
-
 }
 
 .class-info-card-next-week {
@@ -48,7 +46,7 @@ const props = defineProps({
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 16vh;
+    height: 100%;
     padding: 4px;
     border-radius: 10rpx;
     overflow-y: auto;

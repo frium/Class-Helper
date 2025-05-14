@@ -9,7 +9,7 @@ const weekDays = ['星期一', '星期二', '星期三', '星期四', '星期五
 </script>
 
 <template>
-    <view class="popup-class-info">
+    <scroll-view scroll-y class="popup-class-info" enable-flex="true">
         <template v-if="!props.classInfo?.isNowWeek">
             <text v-if="props.classInfo?.isNextWeek">[下周]</text>
             <text v-else>[多周后]</text>
@@ -36,7 +36,7 @@ const weekDays = ['星期一', '星期二', '星期三', '星期四', '星期五
             <image src="@/static/icons/user.svg" mode="scaleToFill" />
             <text> {{ props.classInfo.xm }}</text>
         </view>
-    </view>
+    </scroll-view>
 </template>
 
 <style scoped lang="scss">
@@ -48,8 +48,8 @@ image {
 .popup-class-info {
     display: flex;
     flex-direction: column;
-    width: 300rpx;
-    height: 300rpx;
+    width: 250rpx;
+    height: 250rpx;
     background-color: pink;
     border-radius: 10rpx;
     padding: 25rpx 20rpx;
