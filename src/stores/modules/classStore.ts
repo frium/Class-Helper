@@ -1,6 +1,6 @@
 import { classAllDeatail, getClassData } from '@/types/class';
 import { defineStore } from 'pinia'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useUserStore } from '@/stores/modules/userStore';
 
 export const useClassStore = defineStore('classStore', () => {
@@ -35,11 +35,50 @@ export const useClassStore = defineStore('classStore', () => {
         uni.setStorageSync(`${userStore.username}_class_${key}`, data);
     }
     const miniWeek = ref<boolean[][][]>();
+
+    const semesterList = computed(() => {
+        const yearNames = ["大一", "大二", "大三", "大四"];
+        const semesterOptions = {}; // 存储每个年级的学期选项
+
+        let year = 0;
+        let semesterInYear = 0;
+        let realCount = 0;
+
+        while (realCount < semesterInfoMap.value.size) {
+            const term = semesterInYear === 0 ? "上" : "下";
+            const currentYear = yearNames[year];
+            realCount++;
+
+            if (!semesterOptions[currentYear]) {
+                semesterOptions[currentYear] = [];
+            }
+
+            if (!semesterOptions[currentYear].includes(term)) {
+                semesterOptions[currentYear].push(term);
+            }
+
+            if (semesterInYear === 1) {
+                semesterOptions[currentYear].push("全"); // 添加“全”学期
+                year++;
+                semesterInYear = 0;
+            } else {
+                semesterInYear = 1;
+            }
+        }
+
+        return {
+            gradeOptions: yearNames.slice(0, year), // 只包含实际存在的年级
+            semesterOptions, // 每个年级对应的学期
+        };
+    });
+
+
     return {
         semesterInfoMap,
         selectedSemester,
         selectedWeek,
         miniWeek,
+        semesterList,
         getLocalClassAllDetail,
         setLocalClassAllDetail,
     }

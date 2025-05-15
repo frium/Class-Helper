@@ -1,49 +1,50 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { useClassStore } from '@/stores/modules/classStore';
+import { useScoreStore } from '@/stores/modules/scoreStore';
+import { ref, onMounted, computed } from 'vue'
 
+const classStore = useClassStore();
+const { gradeOptions, semesterOptions } = classStore.semesterList;
+const scoreStore = useScoreStore();
 const showPicker = ref(false);
-const selectedGrade = ref('大一');
-const selectedSemester = ref('上');
-const selectedWeek = ref(1);
-
-// 年级选项
-const gradeOptions = ref([
-    { value: '大一', text: '大一' },
-    { value: '大二', text: '大二' },
-    { value: '大三', text: '大三' },
-    { value: '大四', text: '大四' }
-])
-
-// 学期选项
-const semesterOptions = ref([
-    { value: '上', text: '上' },
-    { value: '下', text: '下' },
-    { value: '全', text: '全' },
-])
+const selectedGrade = ref("");
+const selectedSemester = ref("");
+console.log(scoreStore.selectedSemester);
 
 
-const pickerColumns = ref([
-    gradeOptions.value,
-    semesterOptions.value,
-])
+selectedGrade.value = gradeOptions[Math.ceil(scoreStore.selectedSemester / 2) - 1]
+selectedSemester.value = semesterOptions[selectedGrade.value][scoreStore.isAll ? 2 : (scoreStore.selectedSemester + 1) % 2];
+const pickerColumns = computed(() => [
+    gradeOptions.map((grade: string, index: number) => ({ text: grade, value: grade, index: index })),
+    semesterOptions[selectedGrade.value].map((semester: string, index: number) => ({
+        text: semester,
+        value: semester,
+        index: index
+    })),
+]);
 
 const togglePicker = () => {
     showPicker.value = !showPicker.value;
 }
-
-const confirm = (e: any) => {
+const emit = defineEmits(['change-semester']);
+const confirm = async (e: any) => {
+    console.log(e);
+    if (e.value[1].index == 2) {
+        scoreStore.isAll = true;
+        scoreStore.selectedSemester = e.value[0].index + 1;
+    } else {
+        scoreStore.isAll = false;
+        scoreStore.selectedSemester = 2 * e.value[0].index + e.value[1].index + 1;
+    }
+    console.log(scoreStore.selectedSemester);
+    console.log(scoreStore.isAll);
+    emit('change-semester')
     selectedGrade.value = e.value[0].value;
     selectedSemester.value = e.value[1].value;
-    change();
     showPicker.value = false;
 }
 
-const change = () => {
-    console.log('当前选择:', {
-        grade: selectedGrade.value,
-        semester: selectedSemester.value,
-    })
-}
+
 
 const safeArea = ref(0);
 onMounted(() => {
@@ -58,12 +59,8 @@ onMounted(() => {
             {{ selectedGrade + '&nbsp;&nbsp;' }}{{ selectedSemester }}
         </button>
 
-        <u-picker :show="showPicker" :columns="pickerColumns" keyName="text" @confirm="confirm" @cancel="togglePicker"
-            :defaultIndex="[
-                gradeOptions.findIndex(item => item.value === selectedGrade),
-                semesterOptions.findIndex(item => item.value === selectedSemester),
-                selectedWeek - 1
-            ]"></u-picker>
+        <u-picker :show="showPicker" :columns="pickerColumns" keyName="text" @confirm="confirm"
+            @cancel="togglePicker"></u-picker>
     </view>
 </template>
 

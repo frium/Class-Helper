@@ -9,6 +9,7 @@ import { useClassStore } from '@/stores/modules/classStore';
 import { useScoreStore } from '@/stores/modules/scoreStore';
 import { computed, ref } from 'vue';
 import { scoreTotalDetail } from '@/types/score';
+import { getClassData } from '@/types/class';
 
 const classStore = useClassStore();
 const scoreStore = useScoreStore();
@@ -33,19 +34,36 @@ const scoreTotalDetail = computed<scoreTotalDetail>(() => {
     };
 });
 const loading = ref(false);
+const handelChangeSemester = async () => {
+    loading.value = true;
+    const mapInfo: getClassData = {
+        xnm: '',
+        xqm: ''
+    };
+    mapInfo.xnm = classStore.semesterInfoMap.get(scoreStore.selectedSemester).xnm;
+
+    if (!scoreStore.isAll) {
+        mapInfo.xqm = classStore.semesterInfoMap.get(scoreStore.selectedSemester).xqm;
+    }
+    const res = await getScoreAPI(mapInfo);
+    scoreInfoArr.value = res.data.data.list;
+    loading.value = false;
+}
 onShow(async () => {
     loading.value = true;
     scoreStore.selectedSemester = classStore.semesterInfoMap.size - 1;
-    const res = await getScoreAPI(classStore.semesterInfoMap.get(1));
+    const res = await getScoreAPI(classStore.semesterInfoMap.get(scoreStore.selectedSemester));
     scoreInfoArr.value = res.data.data.list;
     loading.value = false;
+    console.log(classStore.semesterList);
+
 })
 </script>
 
 <template>
     <Loading :loading="loading"></Loading>
     <view v-if="!loading" class="score-page">
-        <SelectSemester></SelectSemester>
+        <SelectSemester @change-semester="handelChangeSemester"></SelectSemester>
         <TotalDetailVue :data="scoreTotalDetail"></TotalDetailVue>
         <template v-for="(item, index) in scoreInfoArr" :key="index">
             <ScoreCard :data="item"></ScoreCard>
