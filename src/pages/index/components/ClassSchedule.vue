@@ -2,7 +2,9 @@
 import { ref } from 'vue';
 import ClassInfoCard from './ClassInfoCard.vue';
 import { classInfo } from '@/types/class';
+import { useClassStore } from '@/stores/modules/classStore';
 
+const classStore = useClassStore();
 const props = defineProps({
     dateInfo: Array,
     classData: Array as () => classInfo[][][]
@@ -15,15 +17,22 @@ const handleShowSchedule = (classInfo: Array<classInfo>) => {
 
     }
 }
-
-
+const getCurrentMMDD = () => {
+    const now = new Date();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    return `${month}/${day}`;
+};
+const currentDate = ref(getCurrentMMDD());
 </script>
 
 <template>
     <view class="class-schedule">
         <view class="class-detail">
             <view class="class-top">
-                <view class="class-date" v-for="(item, index) in props.dateInfo" :key="index">
+                <view class="class-date" :class="{
+                    'now-week': item === currentDate && classStore.selectedSemester === classStore.semesterInfoMap.size
+                }" v-for="(item, index) in props.dateInfo" :key="index">
                     <text>{{ weekDays[index] }}</text>
                     <text style="font-size: 12px">{{ item }}</text>
                 </view>
@@ -74,6 +83,13 @@ const handleShowSchedule = (classInfo: Array<classInfo>) => {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                padding: 5rpx 0;
+                border-radius: 5px;
+            }
+
+            .now-week {
+                background: #47a6f3;
+                color: white;
             }
         }
 

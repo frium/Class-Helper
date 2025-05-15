@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { useUserStore } from '@/stores/modules/userStore';
 
+const userStore = useUserStore();
 </script>
 
 <template>
     <view class="user-info">
         <image class="avatar" src="https://static.frium.top/blog/blogDefaultAvatar.jpg" />
-        <text class="username">username</text>
+        <text class="username">{{ userStore.username }}</text>
     </view>
 </template>
 

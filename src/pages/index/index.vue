@@ -3,14 +3,14 @@ import SelectSemesterWeek from './components/SelectSemesterWeek.vue';
 import ClassSchedule from './components/ClassSchedule.vue';
 import { getClassAPI } from '@/api/class';
 import { useClassStore } from '@/stores/modules/classStore';
-import { onMounted, reactive, ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { classAllDeatail, classInfo } from '@/types/class';
 import PopupClassInfo from './components/PopupClassInfo.vue'
 import { onShow } from '@dcloudio/uni-app';
 
-
 const classStore = useClassStore();
 const show = ref(false);
+
 watch(
   () => classStore.selectedSemester,
   () => { getClassInfo(); }
@@ -42,8 +42,10 @@ const getClassInfo = async () => {
   Object.assign(classAllDeatil, localData);
   classStore.setLocalClassAllDetail(classStore.selectedSemester, classAllDeatil);
   dataArr.value = generateWeeklyDateGroups(classAllDeatil.startTime, classAllDeatil.weekNum);
-  separateArr();
-  loading.value = false;
+  setTimeout(() => {
+    separateArr();
+    loading.value = false;
+  }, 0);
 }
 const generateWeeklyDateGroups = (startDate: string, weeks: number): string[][] => {
   const result: string[][] = [];
@@ -65,6 +67,7 @@ const generateWeeklyDateGroups = (startDate: string, weeks: number): string[][] 
 const classInfoArr = ref<classInfo[][][][]>();
 const separateArr = () => {
   classInfoArr.value = Array.from({ length: classAllDeatil.weekNum }, () => Array.from({ length: 7 }, () => Array.from({ length: classAllDeatil.startTimes.length / 2 }, () => [])));
+  classStore.miniWeek = Array.from({ length: classAllDeatil.weekNum }, () => Array.from({ length: 7 }, () => Array.from({ length: classAllDeatil.startTimes.length / 2 })));
   for (let i = 0; i < classAllDeatil.list.length; i++) {
     //获取课程信息
     const classInfo: classInfo = classAllDeatil.list[i];
@@ -104,8 +107,14 @@ const separateArr = () => {
         };
         Object.assign(nowClassInfo, classInfo);
         if (i >= weekStart - 1) { //填充当前周课程
-          if (!toJump) nowClassInfo.isNowWeek = true;
-          if (toJump && (weekStart % 2 == 0 && (i + 1) % 2 == 0) || (weekStart % 2 != 0 && (i + 1) % 2 != 0)) nowClassInfo.isNowWeek = true;
+          if (!toJump) {
+            nowClassInfo.isNowWeek = true;
+            classStore.miniWeek[i][day - 1][classTime - 1] = true;
+          }
+          if (toJump && (weekStart % 2 == 0 && (i + 1) % 2 == 0) || (weekStart % 2 != 0 && (i + 1) % 2 != 0)) {
+            nowClassInfo.isNowWeek = true;
+            classStore.miniWeek[i][day - 1][classTime - 1] = true;
+          }
         } else { //填充非当前周课程
           nowClassInfo.isNowWeek = false;
           if (i + 1 >= weekStart - 1) nowClassInfo.isNextWeek = true;  //是否是下一周的课程
@@ -123,8 +132,6 @@ const separateArr = () => {
       notWeek = weekEnd + 1;
     }
   }
-  console.log(classInfoArr.value);
-
 }
 
 const dataArr = ref([]);
@@ -138,8 +145,11 @@ const handelShowClassInfo = (classInfoArr: Array<classInfo>) => {
   show.value = true;
   showClassInfoArr.value = classInfoArr;
 }
+
+
 onShow(async () => {
   await getClassInfo();
+
 })
 </script>
 
@@ -158,10 +168,10 @@ onShow(async () => {
             <text class="time">{{ classAllDeatil.endTimes[index] }}</text>
           </view>
         </view>
-        <swiper class="swiper" :duration="200" @change="handleSwiperChange">
+        <swiper class="swiper" :duration="200" @change="handleSwiperChange" :current="(classStore.selectedWeek - 1)">
           <swiper-item v-for="(item, index) in dataArr" :key="index">
-            <ClassSchedule :dateInfo="dataArr[index]" :classData="classInfoArr[index]"
-              @select-class="handelShowClassInfo"></ClassSchedule>
+            <ClassSchedule v-if="classInfoArr && classInfoArr[index]" :dateInfo="dataArr[index]"
+              :classData="classInfoArr[index]" @select-class="handelShowClassInfo"></ClassSchedule>
           </swiper-item>
         </swiper>
       </view>

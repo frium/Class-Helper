@@ -2,7 +2,6 @@
 import UserInfo from "./components/UserInfo.vue";
 import LoginForm from "./components/LoginForm.vue"
 import { ref } from 'vue';
-import { getUserInfoAPI } from "@/api/user";
 import { useUserStore } from "@/stores/modules/userStore";
 import { onShow } from "@dcloudio/uni-app";
 const show = ref(false);

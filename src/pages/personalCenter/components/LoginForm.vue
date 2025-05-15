@@ -3,13 +3,11 @@ import { LoginData } from '@/types/auth';
 import { getUserInfoAPI, loginAPI } from '@/api/user';
 import { ref, reactive } from 'vue';
 import { useUserStore } from '@/stores/modules/userStore';
-import { useClassStore } from '@/stores/modules/classStore';
 const userInfo = reactive<LoginData>({
     username: '',
     password: ''
 })
 const userStore = useUserStore();
-const classStore = useClassStore();
 const emit = defineEmits(['login-success'])
 const submitForm = async () => {
     if (userInfo.username == '') {

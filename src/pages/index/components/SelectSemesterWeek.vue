@@ -11,15 +11,20 @@ const togglePicker = () => {
 
 const selectSemester = (num: number) => {
     classStore.selectedSemester = num;
+    classStore.selectedWeek = 1;
     show.value = false;
 }
 
 
 const safeArea = ref(0);
+const handelChangeSelectWeek = (weekIndex: number) => {
+    classStore.selectedWeek = weekIndex + 1;
+}
 onMounted(async () => {
     const systemInfo = uni.getSystemInfoSync();
     safeArea.value = systemInfo.safeArea.top;
 })
+
 </script>
 
 <template>
@@ -54,13 +59,19 @@ onMounted(async () => {
                 <text style="font-size: 14px; margin: 10px 0 0 5px;">切换周</text>
                 <scroll-view class="week-container" scroll-x="true" enable-flex>
                     <view class="week-out-box">
-                        <view class="week-item" v-for="(item, index) in 20" :key="index">
-                            <view class="week"></view>
-                            <view style="text-align: center;">
-                                <text style="font-size:10px;">第</text>
-                                <text style="font-size:12px;">{{ index + 1 }}</text>
-                                <text style="font-size:10px;">周</text>
+                        <view class="week-item "
+                            :style="{ background: classStore.selectedWeek == (weekIndex + 1) ? 'white' : '#f7f7f7' }"
+                            v-for="(week, weekIndex) in classStore.miniWeek" :key="weekIndex"
+                            @click="handelChangeSelectWeek(weekIndex)">
+                            <text v-if="classStore.selectedWeek == weekIndex + 1" class="now-week"></text>
+                            <view class="mini-grid week">
+                                <view v-for="(day, dayIndex) in week" :key="dayIndex" class="row">
+                                    <view v-for="(classStatus, classStatusIndex) in day" :key="classStatusIndex"
+                                        class="cell" :style="{ backgroundColor: classStatus ? '#58dfd3' : '#e6e6e6' }">
+                                    </view>
+                                </view>
                             </view>
+                            <text>{{ '第' + (weekIndex + 1) + '周' }}</text>
                         </view>
                     </view>
                 </scroll-view>
@@ -76,10 +87,31 @@ onMounted(async () => {
     font-size: 14px;
 }
 
+.mini-grid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transform: rotate(-90deg) scaleX(-1);
+}
+
+.row {
+    flex: 1;
+    display: flex;
+    gap: 2px;
+    border-radius: 2px;
+}
+
+.cell {
+    flex: 1;
+    border-radius: 2px;
+}
+
 .top,
 .bottom {
     width: 700rpx;
-    background: white;
+    background: #f7f7f7;
     border-radius: 10rpx;
     padding: 15rpx;
     margin: 25rpx auto;
@@ -102,7 +134,6 @@ onMounted(async () => {
             width: 100rpx;
             height: 100rpx;
             border-radius: 10%;
-            background: #e6e6e6;
             margin: 0;
         }
 
@@ -128,20 +159,30 @@ onMounted(async () => {
     .week-out-box {
         display: inline-flex;
         flex-direction: row;
-        gap: 20rpx;
         padding: 0 20rpx;
     }
 
     .week-item {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
+        padding: 40rpx 25rpx 10rpx 25rpx;
+        border-radius: 8px;
+
+        .now-week::before {
+            position: absolute;
+            content: "(本周)";
+            top: 4rpx;
+            left: 50%;
+            transform: translateX(-50%);
+        }
     }
 
     .week {
         width: 70rpx;
         height: 70rpx;
-        background: #e6e6e6;
         border-radius: 10%;
     }
 

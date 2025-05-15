@@ -34,10 +34,12 @@ export const useClassStore = defineStore('classStore', () => {
     const setLocalClassAllDetail = (key: number, data: classAllDeatail): void => {
         uni.setStorageSync(`${userStore.username}_class_${key}`, data);
     }
+    const miniWeek = ref<boolean[][][]>();
     return {
         semesterInfoMap,
         selectedSemester,
         selectedWeek,
+        miniWeek,
         getLocalClassAllDetail,
         setLocalClassAllDetail,
     }
