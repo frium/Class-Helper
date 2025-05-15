@@ -3,8 +3,10 @@ import UserInfo from "./components/UserInfo.vue";
 import LoginForm from "./components/LoginForm.vue"
 import { ref } from 'vue';
 import { getUserInfoAPI } from "@/api/user";
+import { useUserStore } from "@/stores/modules/userStore";
+import { onShow } from "@dcloudio/uni-app";
 const show = ref(false);
-
+const userStore = useUserStore();
 const handleLoginSuccess = async () => {
     uni.showToast({
         title: '登录成功!',
@@ -16,6 +18,9 @@ const handleLoginSuccess = async () => {
         uni.switchTab({ url: '/pages/index/index' });
     }, 1500);
 }
+onShow(() => {
+    if (!userStore.token) show.value = true;
+})
 
 </script>
 <template>
