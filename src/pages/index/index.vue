@@ -7,6 +7,7 @@ import { reactive, ref, watch } from 'vue';
 import { classAllDeatail, classInfo } from '@/types/class';
 import PopupClassInfo from './components/PopupClassInfo.vue'
 import { onShow } from '@dcloudio/uni-app';
+import Loading from '@/components/Loading.vue'
 
 const classStore = useClassStore();
 const show = ref(false);
@@ -149,16 +150,13 @@ const handelShowClassInfo = (classInfoArr: Array<classInfo>) => {
 
 onShow(async () => {
   await getClassInfo();
-
 })
 </script>
 
 <template>
-  <view class="home">
+  <Loading :loading="loading"></Loading>
+  <view v-if="!loading" class="home">
     <SelectSemesterWeek></SelectSemesterWeek>
-    <view class="loading-mask" v-if="loading">
-      <up-loading-icon color="white"></up-loading-icon>
-    </view>
     <view>
       <view style="display: flex; ">
         <view class="class-time">
@@ -193,19 +191,6 @@ onShow(async () => {
   gap: 15px;
   margin: auto;
   max-width: calc(300rpx * 2 + 15px);
-}
-
-.loading-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(52, 52, 52, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
 }
 
 

@@ -2,6 +2,7 @@
 import SelectSemester from './components/SelectSemester.vue'
 import ScoreCard from './components/ScoreCard.vue';
 import TotalDetailVue from './components/TotalDetail.vue';
+import Loading from '@/components/Loading.vue'
 import { onShow } from '@dcloudio/uni-app';
 import { getScoreAPI } from '@/api/score';
 import { useClassStore } from '@/stores/modules/classStore';
@@ -31,15 +32,19 @@ const scoreTotalDetail = computed<scoreTotalDetail>(() => {
         failNumber: scoreInfoArr.value.length - passNum
     };
 });
+const loading = ref(false);
 onShow(async () => {
+    loading.value = true;
     scoreStore.selectedSemester = classStore.semesterInfoMap.size - 1;
     const res = await getScoreAPI(classStore.semesterInfoMap.get(1));
     scoreInfoArr.value = res.data.data.list;
+    loading.value = false;
 })
 </script>
 
 <template>
-    <view class="score-page">
+    <Loading :loading="loading"></Loading>
+    <view v-if="!loading" class="score-page">
         <SelectSemester></SelectSemester>
         <TotalDetailVue :data="scoreTotalDetail"></TotalDetailVue>
         <template v-for="(item, index) in scoreInfoArr" :key="index">
