@@ -1,31 +1,38 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { PropType, ref } from 'vue';
+import { scoreInfo } from '@/types/score';
 const show = ref(false);
+const props = defineProps({
+    data: Object as PropType<scoreInfo>
+})
 
 </script>
 
 <template>
-    <view class="score-card" @click="show = true">
+    <view class="score-card" :style="{ borderColor: parseInt(props.data.cj) >= 90 ? '#19be6b' : '#2979ff' }"
+        @click="show = true">
         <div class="left">
-            <text class="class-name">高等代数</text>
-            <text class="credit"> 2.0学分</text>
-            <text> 老师名称</text>
+            <text class="class-name">{{ props.data.kcmc }}</text>
+            <text>{{ props.data.kcxzmc + ' · ' }}</text>
+            <text class="credit"> {{ props.data.xf + '学分 · ' }}</text>
+            <text>{{ props.data.js }}</text>
         </div>
         <div class="right">
-            <text class="score"> 100</text>
-            <text>绩点 5.0</text>
+            <text class="score" :style="{ color: parseInt(props.data.cj) >= 90 ? '#19be6b' : '#2979ff' }"> {{
+                props.data.cj }}</text>
+            <text>{{ '绩点 ' + props.data.jd }}</text>
         </div>
     </view>
     <up-popup v-model:show="show" bgColor="transparent">
         <view class="popup-box">
             <text class="class-name">课程名称</text>
             <view class="grid-table">
-                <view class="grid-item">张三</view>
-                <view class="grid-item">90</view>
-                <view class="grid-item">李四</view>
-                <view class="grid-item">85</view>
-                <view class="grid-item">李四</view>
-                <view class="grid-item">85</view>
+                <template v-for="(item, index) in props.data.details" :key="index">
+                    <view v-if="index === props.data.details.length - 1" class="grid-item">{{ item.name + '(100%)' }}
+                    </view>
+                    <view v-else class="grid-item">{{ item.name + '(' + item.percent * 100 + '%)' }}</view>
+                    <view class="grid-item">{{ item.score }}</view>
+                </template>
             </view>
         </view>
     </up-popup>
@@ -58,8 +65,7 @@ const show = ref(false);
 
         .score {
             display: block;
-            font-size: 20px;
-            color: pink;
+            font-size: 22px;
             font-weight: 600;
 
         }
@@ -97,7 +103,6 @@ const show = ref(false);
     margin-top: 15px;
     grid-template-columns: 1fr 1fr;
     border: 1px solid var(--primary-color);
-    ;
     border-radius: 4px;
     overflow: hidden;
 }
@@ -107,9 +112,7 @@ const show = ref(false);
     padding: 12px;
     text-align: center;
     border-bottom: 1px solid var(--primary-color);
-    ;
     border-right: 1px solid var(--primary-color);
-    ;
 }
 
 .grid-header:nth-child(2n),
