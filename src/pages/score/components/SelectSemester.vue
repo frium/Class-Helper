@@ -59,8 +59,11 @@ onMounted(() => {
             {{ selectedGrade + '&nbsp;&nbsp;' }}{{ selectedSemester }}
         </button>
 
-        <u-picker :show="showPicker" :columns="pickerColumns" keyName="text" @confirm="confirm"
-            @cancel="togglePicker"></u-picker>
+        <u-picker :show="showPicker" :columns="pickerColumns" keyName="text" @confirm="confirm" @cancel="togglePicker"
+            :defaultIndex="[
+                gradeOptions.findIndex(item => item === selectedGrade),
+                semesterOptions[selectedGrade].findIndex(item => item === selectedSemester)
+            ]"></u-picker>
     </view>
 </template>
 

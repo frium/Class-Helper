@@ -51,12 +51,10 @@ const handelChangeSemester = async () => {
 }
 onShow(async () => {
     loading.value = true;
-    scoreStore.selectedSemester = classStore.semesterInfoMap.size - 1;
+    scoreStore.selectedSemester = classStore.semesterInfoMap.size;
     const res = await getScoreAPI(classStore.semesterInfoMap.get(scoreStore.selectedSemester));
     scoreInfoArr.value = res.data.data.list;
     loading.value = false;
-    console.log(classStore.semesterList);
-
 })
 </script>
 
@@ -64,7 +62,7 @@ onShow(async () => {
     <Loading :loading="loading"></Loading>
     <view v-if="!loading" class="score-page">
         <SelectSemester @change-semester="handelChangeSemester"></SelectSemester>
-        <TotalDetailVue :data="scoreTotalDetail"></TotalDetailVue>
+        <TotalDetailVue v-if="scoreInfoArr && scoreInfoArr.length > 0" :data="scoreTotalDetail"></TotalDetailVue>
         <template v-for="(item, index) in scoreInfoArr" :key="index">
             <ScoreCard :data="item"></ScoreCard>
         </template>
@@ -90,7 +88,7 @@ onShow(async () => {
         margin-bottom: 10px;
 
         &::before {
-            content: '暂未更多数据';
+            content: '暂无更多数据';
             position: absolute;
             width: 25%;
             top: 50%;
