@@ -31,7 +31,7 @@ const confirm = async (e: any) => {
     console.log(e);
     if (e.value[1].index == 2) {
         scoreStore.isAll = true;
-        scoreStore.selectedSemester = e.value[0].index + 1;
+        scoreStore.selectedSemester = 2 * e.value[0].index + 1;
     } else {
         scoreStore.isAll = false;
         scoreStore.selectedSemester = 2 * e.value[0].index + e.value[1].index + 1;
