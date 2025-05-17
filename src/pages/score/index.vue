@@ -60,7 +60,7 @@ onShow(async () => {
 
 <template>
     <Loading :loading="loading"></Loading>
-    <view v-if="!loading" class="score-page">
+    <view class="score-page">
         <SelectSemester @change-semester="handelChangeSemester"></SelectSemester>
         <TotalDetailVue v-if="scoreInfoArr && scoreInfoArr.length > 0" :data="scoreTotalDetail"></TotalDetailVue>
         <template v-for="(item, index) in scoreInfoArr" :key="index">

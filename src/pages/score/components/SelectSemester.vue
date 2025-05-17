@@ -9,7 +9,6 @@ const scoreStore = useScoreStore();
 const showPicker = ref(false);
 const selectedGrade = ref("");
 const selectedSemester = ref("");
-console.log(scoreStore.selectedSemester);
 
 
 selectedGrade.value = gradeOptions[Math.ceil(scoreStore.selectedSemester / 2) - 1]
@@ -28,7 +27,6 @@ const togglePicker = () => {
 }
 const emit = defineEmits(['change-semester']);
 const confirm = async (e: any) => {
-    console.log(e);
     if (e.value[1].index == 2) {
         scoreStore.isAll = true;
         scoreStore.selectedSemester = 2 * e.value[0].index + 1;
@@ -36,8 +34,6 @@ const confirm = async (e: any) => {
         scoreStore.isAll = false;
         scoreStore.selectedSemester = 2 * e.value[0].index + e.value[1].index + 1;
     }
-    console.log(scoreStore.selectedSemester);
-    console.log(scoreStore.isAll);
     emit('change-semester')
     selectedGrade.value = e.value[0].value;
     selectedSemester.value = e.value[1].value;

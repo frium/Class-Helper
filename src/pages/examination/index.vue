@@ -1,8 +1,24 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import ExaminationInfoCard from "./components/ExaminationInfoCard.vue";
-import SelectSemester from "../score/components/SelectSemester.vue";
+import ExaminationInfoList from './components/ExaminationInfoList.vue';
+import { useClassStore } from "@/stores/modules/classStore";
+import { getExaminationAPI } from "@/api/exam";
+import { getClassData } from "@/types/class";
+
+const classStore = useClassStore();
+const semesterValues = Array.from(classStore.semesterInfoMap.values()).reverse();
+const examinationList = ref([]);
+const requests = semesterValues.map(async (value: getClassData) => {
+    const response = await getExaminationAPI(value);
+    return response.data.data;
+});
+
+Promise.all(requests)
+    .then(results => {
+        examinationList.value = results;
+    })
 const safeArea = ref(0);
+
 onMounted(() => {
     const systemInfo = uni.getSystemInfoSync();
     safeArea.value = systemInfo.safeArea?.top || 0;
@@ -11,9 +27,10 @@ onMounted(() => {
 
 <template>
     <view class="examination">
-        <SelectSemester></SelectSemester>
-        <ExaminationInfoCard>
-        </ExaminationInfoCard>
+        <template v-for="(item, index) in examinationList" :key="index">
+            <ExaminationInfoList :dataList="item"></ExaminationInfoList>
+        </template>
+
     </view>
 </template>
 
