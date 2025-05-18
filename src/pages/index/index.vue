@@ -6,7 +6,7 @@ import { useClassStore } from '@/stores/modules/classStore';
 import { reactive, ref, watch } from 'vue';
 import { classAllDeatail, classInfo } from '@/types/class';
 import PopupClassInfo from './components/PopupClassInfo.vue'
-import { onShow } from '@dcloudio/uni-app';
+import { onPullDownRefresh, onShow } from '@dcloudio/uni-app';
 import Loading from '@/components/Loading.vue'
 
 const classStore = useClassStore();
@@ -168,6 +168,10 @@ const toNowWeek = () => {
 }
 
 onShow(async () => {
+  await getClassInfo();
+})
+
+onPullDownRefresh(async () => {
   await getClassInfo();
 })
 </script>

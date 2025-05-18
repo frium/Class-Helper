@@ -5,6 +5,7 @@ import { useClassStore } from "@/stores/modules/classStore";
 import { getExaminationAPI } from "@/api/exam";
 import { getClassData } from "@/types/class";
 import Loading from '@/components/Loading.vue'
+import { onPullDownRefresh } from "@dcloudio/uni-app";
 
 const classStore = useClassStore();
 const semesterValues = Array.from(classStore.semesterInfoMap.values()).reverse();
@@ -26,6 +27,15 @@ onMounted(() => {
     loading.value = true;
     const systemInfo = uni.getSystemInfoSync();
     safeArea.value = systemInfo.safeArea?.top || 0;
+})
+
+onPullDownRefresh(() => {
+    loading.value = true;
+    Promise.all(requests)
+        .then(results => {
+            examinationList.value = results;
+            loading.value = false;
+        })
 })
 </script>
 

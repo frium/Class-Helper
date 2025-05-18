@@ -56,6 +56,7 @@ onShow(async () => {
     scoreInfoArr.value = res.data.data.list;
     loading.value = false;
 })
+
 </script>
 
 <template>
