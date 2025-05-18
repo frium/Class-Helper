@@ -23,7 +23,7 @@
 		{
 			"path": "pages/examination/index",
 			"style": {
-				"navigationBarTitleText": "考试日程"
+				"navigationStyle": "custom"
 			}
 		},
 		{

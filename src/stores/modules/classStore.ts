@@ -27,6 +27,8 @@ export const useClassStore = defineStore('classStore', () => {
         selectedSemester.value = semesterMap.size;
         return semesterMap;
     });
+    const classColorMap = reactive<Map<string, string>>(new Map());
+
     const selectedWeek = ref(1);
     const getLocalClassAllDetail = (key: number): classAllDeatail => {
         return uni.getStorageSync(`${userStore.username}_class_${key}`);
@@ -72,13 +74,17 @@ export const useClassStore = defineStore('classStore', () => {
         };
     });
 
-
+    const colorArr = ['#ff9e9e', '#88c4ff', '#ffb562', '#98d8aa', '#b784b7', '#87a2fb', '#96c291', '#ffa1cf', '#89b9ad', '#93bfcf', '#bea6ff', '#6699ff', '#ffb7b7', '#ffd0a5'];
+    const nowWeek = ref(1);
     return {
         semesterInfoMap,
         selectedSemester,
         selectedWeek,
         miniWeek,
         semesterList,
+        classColorMap,
+        colorArr,
+        nowWeek,
         getLocalClassAllDetail,
         setLocalClassAllDetail,
     }

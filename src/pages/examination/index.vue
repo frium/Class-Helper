@@ -4,6 +4,7 @@ import ExaminationInfoList from './components/ExaminationInfoList.vue';
 import { useClassStore } from "@/stores/modules/classStore";
 import { getExaminationAPI } from "@/api/exam";
 import { getClassData } from "@/types/class";
+import Loading from '@/components/Loading.vue'
 
 const classStore = useClassStore();
 const semesterValues = Array.from(classStore.semesterInfoMap.values()).reverse();
@@ -16,17 +17,24 @@ const requests = semesterValues.map(async (value: getClassData) => {
 Promise.all(requests)
     .then(results => {
         examinationList.value = results;
+        loading.value = false;
     })
 const safeArea = ref(0);
+const loading = ref(false);
 
 onMounted(() => {
+    loading.value = true;
     const systemInfo = uni.getSystemInfoSync();
     safeArea.value = systemInfo.safeArea?.top || 0;
 })
 </script>
 
 <template>
+    <Loading :loading="loading"></Loading>
     <view class="examination">
+        <view :style="{ paddingTop: (safeArea + 12) + 'px', color: 'black', textAlign: 'center', fontSize: '14px' }">
+            考试日程
+        </view>
         <template v-for="(item, index) in examinationList" :key="index">
             <ExaminationInfoList :dataList="item"></ExaminationInfoList>
         </template>

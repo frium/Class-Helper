@@ -5,11 +5,13 @@ import { PropType } from 'vue';
 const props = defineProps({
     classInfo: Object as PropType<classInfo>
 })
+const classStore = useClassStore();
 </script>
 
 <template>
-    <view class="class-info-card" v-if="props.classInfo?.isNowWeek">
-        <text>{{ props.classInfo?.kcmc }}</text>
+    <view class="class-info-card" v-if="props.classInfo?.isNowWeek"
+        :style="{ background: classStore.classColorMap.get(props.classInfo.kcmc) }"> <text>{{
+            props.classInfo?.kcmc }}</text>
         <text style="font-size: 10px; margin-top: 2px;">{{ "@" + props.classInfo?.cdmc }}</text>
     </view>
     <view :class="{
@@ -25,19 +27,17 @@ const props = defineProps({
 
 <style scoped lang="scss">
 .class-info-card-not-now {
-    background: rgb(220, 220, 220);
-    color: #757575;
+    background: #dcdcdc;
+    color: #ffffff;
 }
 
 .class-info-card-next-week {
     background: rgb(220, 220, 220);
-    color: #626262;
+    color: #898989;
 }
 
 .class-info-card {
-    background: rgb(111, 119, 237);
     color: #f1f1f1;
-
 }
 
 .class-info-card-not-now,

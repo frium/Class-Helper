@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getClassAPI } from '@/api/class';
 import { useClassStore } from '@/stores/modules/classStore';
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const show = ref<boolean>(false);
 const classStore = useClassStore();
@@ -20,6 +20,23 @@ const safeArea = ref(0);
 const handelChangeSelectWeek = (weekIndex: number) => {
     classStore.selectedWeek = weekIndex + 1;
 }
+
+const showToNowWeek = ref(false);
+
+watch(
+    () => classStore.selectedWeek,
+    () => {
+        if (classStore.selectedSemester === classStore.semesterInfoMap.size && classStore.selectedWeek != classStore.nowWeek) {
+            showToNowWeek.value = true;
+        } else {
+            showToNowWeek.value = false;
+        }
+    }
+);
+const emit = defineEmits(['to-now-week'])
+const handelToNowWeek = () => {
+    emit('to-now-week');
+}
 onMounted(async () => {
     const systemInfo = uni.getSystemInfoSync();
     safeArea.value = systemInfo.safeArea.top;
@@ -28,8 +45,11 @@ onMounted(async () => {
 </script>
 
 <template>
-    <view :style="{ paddingTop: safeArea + 'px' }">
-        <button class="open-button" @click="togglePicker">第{{ classStore.selectedWeek }}周</button>
+    <view :style="{ paddingTop: (safeArea + 8) + 'px' }">
+        <view style="position: relative;">
+            <button class="open-button" @click="togglePicker">第{{ classStore.selectedWeek }}周</button>
+            <button class="to-now-week" v-if="showToNowWeek" @click="handelToNowWeek">回到本周</button>
+        </view>
         <up-popup v-model:show="show" bgColor="transparent">
             <view class="top">
                 <text style="font-size: 14px; margin: 10px 0 0 5px;">切换课表</text>
@@ -85,6 +105,16 @@ onMounted(async () => {
 
 .open-button {
     font-size: 14px;
+    height: 36px;
+}
+
+.to-now-week {
+    position: absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(0, -50%);
+    font-size: 14px;
+    color: var(--primary-color);
 }
 
 .mini-grid {

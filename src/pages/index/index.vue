@@ -46,7 +46,10 @@ const getClassInfo = async () => {
   setTimeout(() => {
     separateArr();
     loading.value = false;
+    toNowWeek();
+
   }, 0);
+
 }
 const generateWeeklyDateGroups = (startDate: string, weeks: number): string[][] => {
   const result: string[][] = [];
@@ -72,6 +75,7 @@ const separateArr = () => {
   for (let i = 0; i < classAllDeatil.list.length; i++) {
     //获取课程信息
     const classInfo: classInfo = classAllDeatil.list[i];
+    setColorMap(classInfo);
     //获取周
     const allWeek: string[] = classInfo.zcd.split(',');
     let notWeek: number = 1;
@@ -133,8 +137,15 @@ const separateArr = () => {
       notWeek = weekEnd + 1;
     }
   }
-}
+  index = 0;
 
+}
+let index = 0;
+const setColorMap = (classInfo: classInfo) => {
+  if (!classStore.classColorMap.get(classInfo.kcmc)) {
+    classStore.classColorMap.set(classInfo.kcmc, classStore.colorArr[index++]);
+  }
+}
 const dataArr = ref([]);
 
 const handleSwiperChange = (event: any) => {
@@ -146,7 +157,15 @@ const handelShowClassInfo = (classInfoArr: Array<classInfo>) => {
   show.value = true;
   showClassInfoArr.value = classInfoArr;
 }
-
+const toNowWeek = () => {
+  const nowDate = new Date();
+  const startDate = new Date(classAllDeatil.startTime);
+  const weekIndex = Math.floor((nowDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * 7)) + 1;
+  if (weekIndex <= 22) {
+    classStore.nowWeek = weekIndex;
+    classStore.selectedWeek = weekIndex;
+  }
+}
 
 onShow(async () => {
   await getClassInfo();
@@ -156,7 +175,7 @@ onShow(async () => {
 <template>
   <Loading :loading="loading"></Loading>
   <view v-if="!loading" class="home">
-    <SelectSemesterWeek></SelectSemesterWeek>
+    <SelectSemesterWeek @to-now-week="toNowWeek"></SelectSemesterWeek>
     <view>
       <view style="display: flex; ">
         <view class="class-time">

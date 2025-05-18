@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useClassStore } from "@/stores/modules/classStore";
 import { classInfo } from "@/types/class";
 import { PropType } from "vue";
 
@@ -6,10 +7,12 @@ const props = defineProps({
     classInfo: Object as PropType<classInfo>
 });
 const weekDays = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
+const classStore = useClassStore();
 </script>
 
 <template>
-    <scroll-view scroll-y class="popup-class-info" enable-flex="true">
+    <scroll-view scroll-y class="popup-class-info" enable-flex="true"
+        :style="{ background: !props.classInfo?.isNowWeek ? '#dcdcdc' : classStore.classColorMap.get(props.classInfo.kcmc) }">
         <template v-if="!props.classInfo?.isNowWeek">
             <text v-if="props.classInfo?.isNextWeek">[下周]</text>
             <text v-else>[多周后]</text>
@@ -50,7 +53,6 @@ image {
     flex-direction: column;
     width: 250rpx;
     height: 250rpx;
-    background-color: pink;
     border-radius: 10rpx;
     padding: 25rpx 20rpx;
     color: white;
